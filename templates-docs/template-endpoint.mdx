@@ -105,4 +105,16 @@ HTTP/1.1 {{http_sucesso}} {{motivo_http_sucesso}}
 - [ ] Os exemplos usam apenas dados fictícios, sem informações pessoais reais.
 - [ ] As regras de negócio foram revisadas pelo responsável de produto.
 - [ ] A tabela de status contempla os erros previstos pela API.
+- [ ] A seção de histórico de alterações foi atualizada com versão, autor e PR.
 - [ ] O build do Docusaurus passou sem links quebrados.
+
+## Histórico de alterações
+
+Toda alteração de contrato, payload, regra de negócio ou exemplo deve gerar uma
+nova linha nesta tabela. Ela é o registro auditável da página e complementa o
+histórico de commits do Git.
+
+| Data / Hora | Versão | Autor (Dev) | Descrição da Mudança | PR / Ticket |
+| :--- | :--- | :--- | :--- | :--- |
+| `{{data_iso_8601}}` | `v{{versao_api}}` | `{{nome_desenvolvedor}}` | {{descricao_resumida_alteracao}} | `{{numero_pr_ou_ticket}}` |
+| `2026-10-31 14:00` | `v1.0.0` | `{{nome_desenvolvedor}}` | Criação inicial da documentação da rota. | `#1024` |

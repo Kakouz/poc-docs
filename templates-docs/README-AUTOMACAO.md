@@ -87,6 +87,7 @@ cp templates-docs/template-endpoint.mdx docs/assobes/meu-novo-endpoint.mdx
 - Exemplo de requisição em cURL.
 - Payload JSON de entrada e saída.
 - Tabela de códigos HTTP.
+- Histórico de alterações (audit trail) com data, versão, autor e PR.
 - Checklist de revisão.
 
 ### Pontos fortes
@@ -169,6 +170,7 @@ npm run docs:generate -- \
 - Tipos, obrigatoriedade e validações simples.
 - Códigos de resposta previstos.
 - Nome de DTOs e campos.
+- Autor e data do commit para a tabela de histórico.
 
 ### O que ainda exige validação humana
 
@@ -178,6 +180,7 @@ npm run docs:generate -- \
 - Segurança e dados sensíveis.
 - Explicação de exceções, limites e acordos comerciais.
 - Prioridade e organização do menu.
+- Descrição funcional da mudança registrada no histórico de alterações.
 
 ### Pontos fortes
 
@@ -248,6 +251,7 @@ negócio, segurança ou contrato com o cliente.
 - [ ] Página MDX criada ou atualizada.
 - [ ] Exemplos com dados fictícios.
 - [ ] Regras de negócio revisadas pela PO.
+- [ ] Histórico de alterações atualizado (data, versão, autor e PR).
 - [ ] `npm run build` passando.
 - [ ] Preview do Docusaurus validado no PR.
 
@@ -259,6 +263,72 @@ negócio, segurança ou contrato com o cliente.
 - Verificação de placeholders `{{...}}` não substituídos.
 - Secret scanning nos exemplos.
 - Preview automático do site no pull request.
+
+### Rastreabilidade: histórico no MDX e metadados do Git
+
+Existem duas camadas complementares para registrar a evolução de uma página:
+
+| Camada | O que registra | Onde fica |
+| --- | --- | --- |
+| **Tabela “Histórico de alterações”** | Data, versão da API, autor, descrição funcional e PR/ticket | Dentro do `.mdx`, visível ao cliente |
+| **Metadados nativos do Docusaurus** | Autor e data do último commit do arquivo | Rodapé da página, gerado no build |
+
+A tabela é obrigatória porque explica **o que mudou e por quê**, com a versão do
+contrato e o rastreio do PR. Os metadados nativos são automáticos e servem como
+segunda evidência, sem depender de disciplina manual.
+
+#### Opção nativa do Docusaurus
+
+O Docusaurus lê o histórico do Git no momento do build e pode exibir o autor e a
+data da última atualização no rodapé de cada página. Basta habilitar as opções no
+preset de docs em `docusaurus.config.ts`:
+
+```ts
+// docusaurus.config.ts
+docs: {
+  sidebarPath: './sidebars.ts',
+  showLastUpdateTime: true,
+  showLastUpdateAuthor: true,
+},
+```
+
+> Neste projeto as opções entram no bloco `docs` do preset `classic`. Se o plugin
+> de conteúdo fosse usado isoladamente, elas iriam nas opções do plugin. Na POC as
+> duas opções estão desabilitadas; habilitar é uma decisão de governança, não uma
+> mudança de conteúdo.
+
+**Pré-requisito no CI:** o Docusaurus consulta o histórico do Git. Em pipelines
+com checkout raso (padrão do `actions/checkout`), o histórico não existe e o
+rodapé fica vazio. Ajuste o workflow:
+
+```yaml
+- name: Checkout
+  uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+```
+
+**Quando o Git não é suficiente:** se a página for copiada, gerada por
+automação ou consolidar conteúdo de vários arquivos, o autor do commit pode não
+ser o autor real da mudança. Nesse caso, sobrescreva os metadados no front
+matter:
+
+```mdx
+---
+title: "Inserir / Criar Cadastro"
+last_update:
+  author: "Time de Integrações CIEE"
+  date: "2026-10-31"
+---
+```
+
+**Limitações a considerar:**
+
+- Exibe apenas a **última** atualização, não o histórico completo.
+- Depende de o build ter acesso ao repositório Git e ao histórico completo.
+- O autor é o autor do commit, que pode ser um bot ou um merge.
+- Não substitui a tabela de auditoria exigida em contrato ou auditoria interna.
+- Não deve expor e-mail ou dado pessoal do desenvolvedor na página publicada.
 
 ### Papéis
 
@@ -311,6 +381,11 @@ podem ser renomeados conforme o DTO de cada endpoint.
 | `{{http_nao_autorizado}}` | 401 | Padrão de autenticação |
 | `{{http_erro_interno}}` | 500 | Padrão da API |
 | `{{descricao_*}}` | Cadastro criado com sucesso. | Texto gerado e revisado |
+| `{{data_iso_8601}}` | `2026-10-31 14:00` | Data da alteração registrada |
+| `{{versao_api}}` | `1.0.0` | Versão do contrato no histórico |
+| `{{nome_desenvolvedor}}` | `Maria Silva` | Autor da alteração |
+| `{{descricao_resumida_alteracao}}` | Ajuste na validação do CPF. | Resumo funcional da mudança |
+| `{{numero_pr_ou_ticket}}` | `#1024` | PR ou ticket de origem |
 
 ---
 
