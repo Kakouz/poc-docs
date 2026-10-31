@@ -1,0 +1,9 @@
+{
+  "label": "APIs",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "title": "APIs",
+    "description": "Referência das APIs documentadas nesta POC."
+  }
+}

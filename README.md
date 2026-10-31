@@ -1,0 +1,112 @@
+# POC — Documentação de APIs
+
+Prova de conceito (POC) para validar o uso do [Docusaurus](https://docusaurus.io/)
+na publicação da documentação das nossas APIs no GitHub Pages.
+
+Esta versão foi reduzida ao mínimo para testar o fluxo de publicação e coletar o
+retorno do time antes de adicionar o conteúdo definitivo.
+
+## O que tem no site
+
+- Página inicial com o objetivo da POC.
+- **Visão geral** (`/docs/`) explicando o escopo.
+- **API de exemplo** (`/docs/apis/exemplo`) com endpoint, parâmetros, exemplo de
+  requisição/resposta e códigos de status.
+
+O blog, os tutoriais e as páginas de exemplo do template original foram removidos.
+
+## Requisitos
+
+- [Node.js](https://nodejs.org/) 20 ou superior
+- npm
+
+## Como rodar localmente
+
+```bash
+npm install
+npm run start
+```
+
+O site abre em `http://localhost:3000/poc-docs/`. As alterações em `docs/` e
+`src/` são recarregadas automaticamente.
+
+## Build de produção
+
+```bash
+npm run build
+```
+
+O resultado fica na pasta `build/`. Para servir o build localmente:
+
+```bash
+npm run serve
+```
+
+## Estrutura do projeto
+
+```text
+.
+├── docs/                  # Conteúdo da documentação (Markdown/MDX)
+│   ├── intro.mdx          # Visão geral
+│   └── apis/              # Referência das APIs
+├── src/
+│   ├── css/custom.css     # Tema e variáveis de estilo
+│   └── pages/index.tsx    # Página inicial
+├── static/                # Arquivos estáticos (imagens, .nojekyll)
+├── docusaurus.config.ts   # Configuração do site (URL, navbar, rodapé...)
+├── sidebars.ts            # Sidebar gerada a partir de docs/
+└── .github/workflows/     # Deploy automático no GitHub Pages
+```
+
+## Deploy no GitHub Pages
+
+O deploy é feito automaticamente pelo GitHub Actions a cada push na branch
+`main`, pelo workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+
+Configuração necessária (apenas uma vez, no GitHub):
+
+1. Acesse **Settings → Pages** no repositório.
+2. Em **Build and deployment → Source**, selecione **GitHub Actions**.
+3. Faça push na branch `main` ou rode o workflow manualmente em
+   **Actions → Deploy no GitHub Pages → Run workflow**.
+
+O site ficará disponível em:
+
+```text
+https://kakouz.github.io/poc-docs/
+```
+
+### Configuração de URL
+
+As configurações de publicação ficam em `docusaurus.config.ts`:
+
+```ts
+url: 'https://kakouz.github.io',
+baseUrl: '/poc-docs/',
+organizationName: 'Kakouz',
+projectName: 'poc-docs',
+```
+
+Se o repositório ou a organização mudarem, atualize esses campos (e os links do
+GitHub na navbar/rodapé).
+
+### Alternativa: deploy manual
+
+Também é possível publicar usando o script do Docusaurus (requer credenciais
+locais do Git):
+
+```bash
+GIT_USER=Kakouz npm run deploy
+```
+
+Esse comando gera o build e envia para a branch `gh-pages`. Com o workflow do
+GitHub Actions configurado, esse passo não é necessário.
+
+## Adicionando novas APIs
+
+1. Crie um arquivo `.md` ou `.mdx` em `docs/apis/`.
+2. Adicione o front matter com `title` e `sidebar_position`.
+3. Rode `npm run start` para conferir o resultado.
+4. Abra um pull request.
+
+A sidebar é gerada automaticamente pela estrutura de pastas (`sidebars.ts`).

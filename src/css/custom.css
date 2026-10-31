@@ -1,0 +1,27 @@
+/**
+ * CSS global do site. O Docusaurus já inclui o Infima por padrão.
+ * As variáveis abaixo definem a cor principal do tema (claro e escuro).
+ */
+
+:root {
+  --ifm-color-primary: #1f6feb;
+  --ifm-color-primary-dark: #1b64d4;
+  --ifm-color-primary-darker: #195ec8;
+  --ifm-color-primary-darkest: #154ea5;
+  --ifm-color-primary-light: #3a80ee;
+  --ifm-color-primary-lighter: #4788ef;
+  --ifm-color-primary-lightest: #6da1f3;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #6da1f3;
+  --ifm-color-primary-dark: #4788ef;
+  --ifm-color-primary-darker: #3a80ee;
+  --ifm-color-primary-darkest: #1f6feb;
+  --ifm-color-primary-light: #93b9f7;
+  --ifm-color-primary-lighter: #a5c4f8;
+  --ifm-color-primary-lightest: #d7e5fc;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
