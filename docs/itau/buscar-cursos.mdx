@@ -1,0 +1,93 @@
+---
+sidebar_position: 4
+title: Buscar Cursos do Contrato
+---
+
+# Buscar Cursos do Contrato
+
+Lista os cursos habilitados para os contratos de estágio do Itaú.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-cursos?contratoId=ctr_itau_2026_014
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- `contratoId` é obrigatório e define os cursos disponíveis para o contrato.
+- Apenas cursos ativos e vigentes na data da consulta são retornados.
+- O `cursoId` retornado deve ser usado nas rotas `inserir-cadastro`,
+  `atualizar-cadastro` e `gerar-tce`.
+- Cursos de nível técnico e superior seguem as regras do contrato Itaú.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-cursos?contratoId=ctr_itau_2026_014" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_itau_2026_014"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "contratoId": "ctr_itau_2026_014",
+  "cursos": [
+    {
+      "id": "cur_422",
+      "nome": "Ciência da Computação",
+      "nivel": "ENSINO_SUPERIOR",
+      "cargaHoraria": 320,
+      "status": "ATIVO"
+    },
+    {
+      "id": "cur_433",
+      "nome": "Engenharia de Software",
+      "nivel": "ENSINO_SUPERIOR",
+      "cargaHoraria": 320,
+      "status": "ATIVO"
+    },
+    {
+      "id": "cur_511",
+      "nome": "Técnico em Informática",
+      "nivel": "ENSINO_TECNICO",
+      "cargaHoraria": 240,
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente ou em formato inválido. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os cursos. |

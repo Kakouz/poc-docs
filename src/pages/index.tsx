@@ -82,7 +82,7 @@ const cards: Card[] = [
     Icon: IconClients,
     action: {
       label: 'Explorar clientes',
-      to: '/docs/category/clientes',
+      to: '/docs/clientes/visao-por-cliente',
     },
   },
   {

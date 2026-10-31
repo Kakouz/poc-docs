@@ -1,0 +1,93 @@
+---
+sidebar_position: 4
+title: Buscar Cursos do Contrato
+---
+
+# Buscar Cursos do Contrato
+
+Lista os cursos habilitados para o contrato de estágio do Grupo Assobes.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-cursos?contratoId=ctr_assobes_2026_001
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- `contratoId` é obrigatório e define os cursos disponíveis para contratação.
+- Apenas cursos com status `ATIVO` e vigentes na data da consulta são
+  retornados.
+- O `cursoId` retornado deve ser usado nas rotas `inserir-cadastro` e `gerar-tce`.
+- A consulta não cria vínculo; ela apenas lista as opções permitidas.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-cursos?contratoId=ctr_assobes_2026_001" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_assobes_2026_001"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "contratoId": "ctr_assobes_2026_001",
+  "cursos": [
+    {
+      "id": "cur_310",
+      "nome": "Administração",
+      "nivel": "ENSINO_SUPERIOR",
+      "cargaHoraria": 300,
+      "status": "ATIVO"
+    },
+    {
+      "id": "cur_412",
+      "nome": "Ciências Contábeis",
+      "nivel": "ENSINO_SUPERIOR",
+      "cargaHoraria": 300,
+      "status": "ATIVO"
+    },
+    {
+      "id": "cur_508",
+      "nome": "Técnico em Recursos Humanos",
+      "nivel": "ENSINO_TECNICO",
+      "cargaHoraria": 240,
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente ou em formato inválido. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os cursos. |

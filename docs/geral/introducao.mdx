@@ -31,18 +31,32 @@ Este portal centraliza a documentação técnica das integrações do CIEE, incl
 
 ## Como navegar
 
-- [Visão por cliente](/docs/category/clientes) — documentação dedicada a cada
-  conta integrada.
-- [API de exemplo](/docs/apis/exemplo) — referência fictícia que demonstra o
-  padrão de documentação utilizado no portal.
+- [Autenticação & Token](/docs/geral/autenticacao) — obtenção do JWT utilizado
+  em todas as chamadas.
+- [Grupo Assobes](/docs/assobes/inserir-cadastro) — fluxo de contratação e
+  gestão de contratos do parceiro.
+- [Itaú (Escopo Estendido)](/docs/itau/inserir-cadastro) — mesmo fluxo do
+  Assobes, acrescido das rotas de prorrogação.
+- [Visão por cliente](/docs/clientes/visao-por-cliente) — página de entrada
+  segmentada por conta integrada.
+
+## Fluxo de contratação
+
+1. Autentique o cliente e obtenha o token JWT.
+2. Consulte supervisores, cursos e locais disponíveis no contrato.
+3. Insira ou atualize o cadastro do estudante.
+4. Gere o TCE e envie o documento assinado em Base64.
+5. Para prorrogações, gere o TA ou utilize as rotas específicas do Itaú.
+6. Em caso de encerramento antecipado, registre a rescisão do contrato.
 
 ## Status
 
-**Em validação com o time.** Esta versão contém apenas o conteúdo mínimo para
-validar a identidade visual, a navegação e o fluxo de publicação no GitHub Pages.
+**Em validação com o time.** As rotas e os dados de exemplo são fictícios e
+servem para validar a estrutura da documentação antes da publicação das
+especificações definitivas.
 
 ## Próximos passos
 
-1. Revisar a identidade visual e a estrutura de navegação com o time.
-2. Adicionar as APIs reais e as especificações por cliente.
-3. Publicar os guias de autenticação, ambientes e versionamento.
+1. Revisar os payloads e as regras de negócio com os times de integração.
+2. Validar as rotas de prorrogação com o cliente Itaú.
+3. Publicar os ambientes, limites de uso e guias de versionamento.

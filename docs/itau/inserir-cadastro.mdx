@@ -1,0 +1,152 @@
+---
+sidebar_position: 1
+title: Inserir / Criar Cadastro
+---
+
+# Inserir / Criar Cadastro
+
+Cria o cadastro do estudante e o vincula ao contrato de estágio do Itaú,
+incluindo os campos específicos do escopo estendido da conta.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/inserir-cadastro
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- O telefone deve obrigatoriamente seguir o formato `(XX) XXXXXXXXX`.
+- Se o CPF já existir, a API realiza um **upsert**: atualiza o cadastro
+  existente em vez de criar um duplicado.
+- `codigoCentroCusto` e `matriculaGestor` são obrigatórios para o contrato Itaú.
+- `contratoId`, `supervisorId`, `cursoId` e `localEstagioId` precisam pertencer
+  ao mesmo contrato informado.
+- O retorno `201` indica criação; o retorno `200` indica atualização de um
+  cadastro já existente.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/inserir-cadastro" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf": "987.654.321-00",
+    "nome": "Lucas Ferreira Lima",
+    "dataNascimento": "2003-02-11",
+    "sexo": "M",
+    "email": "lucas.lima@example.com",
+    "telefone": "(11) 998877665",
+    "endereco": {
+      "cep": "04571-010",
+      "logradouro": "Avenida Engenheiro Luís Carlos Berrini",
+      "numero": "1376",
+      "complemento": "Bloco B, 8º andar",
+      "bairro": "Cidade Monções",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "escolaridade": {
+      "nivel": "ENSINO_SUPERIOR",
+      "curso": "Ciência da Computação",
+      "instituicao": "Universidade de São Paulo",
+      "semestre": 5,
+      "previsaoConclusao": "2028-06"
+    },
+    "contratacao": {
+      "contratoId": "ctr_itau_2026_014",
+      "codigoCentroCusto": "CC-ITAU-4412",
+      "matriculaGestor": "G-88231",
+      "cargo": "Estagiário de Tecnologia",
+      "jornadaSemanal": 30,
+      "valorBolsa": 2200.00,
+      "dataInicio": "2026-11-10",
+      "dataFim": "2027-11-09",
+      "supervisorId": "sup_2087",
+      "cursoId": "cur_422",
+      "localEstagioId": "loc_315"
+    }
+  }'
+```
+
+```json
+{
+  "cpf": "987.654.321-00",
+  "nome": "Lucas Ferreira Lima",
+  "dataNascimento": "2003-02-11",
+  "sexo": "M",
+  "email": "lucas.lima@example.com",
+  "telefone": "(11) 998877665",
+  "endereco": {
+    "cep": "04571-010",
+    "logradouro": "Avenida Engenheiro Luís Carlos Berrini",
+    "numero": "1376",
+    "complemento": "Bloco B, 8º andar",
+    "bairro": "Cidade Monções",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "escolaridade": {
+    "nivel": "ENSINO_SUPERIOR",
+    "curso": "Ciência da Computação",
+    "instituicao": "Universidade de São Paulo",
+    "semestre": 5,
+    "previsaoConclusao": "2028-06"
+  },
+  "contratacao": {
+    "contratoId": "ctr_itau_2026_014",
+    "codigoCentroCusto": "CC-ITAU-4412",
+    "matriculaGestor": "G-88231",
+    "cargo": "Estagiário de Tecnologia",
+    "jornadaSemanal": 30,
+    "valorBolsa": 2200.00,
+    "dataInicio": "2026-11-10",
+    "dataFim": "2027-11-09",
+    "supervisorId": "sup_2087",
+    "cursoId": "cur_422",
+    "localEstagioId": "loc_315"
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "id": "cad_2d7e5a14",
+  "status": "SUCESSO",
+  "mensagem": "Cadastro processado com sucesso.",
+  "cpf": "987.654.321-00",
+  "contratoId": "ctr_itau_2026_014",
+  "codigoCentroCusto": "CC-ITAU-4412",
+  "acao": "CRIADO",
+  "dataProcessamento": "2026-10-31T18:15:27Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `201` | Cadastro criado com sucesso. |
+| `200` | Cadastro existente atualizado via upsert. |
+| `400` | Dado inválido, campo obrigatório ausente ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao processar o cadastro. |

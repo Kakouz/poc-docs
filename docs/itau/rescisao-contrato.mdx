@@ -1,0 +1,92 @@
+---
+sidebar_position: 9
+title: Rescisão de Contrato
+---
+
+# Rescisão de Contrato
+
+Encerra antecipadamente um contrato de estágio ativo do Itaú e registra o motivo
+da rescisão.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/rescisao-contrato
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- O contrato precisa estar `ATIVO` ou `ASSINADO` para ser rescindido.
+- A `dataRescisao` não pode ser anterior ao início do contrato nem posterior à
+  data atual.
+- O motivo deve ser `DESLIGAMENTO_ESTUDANTE`, `DESLIGAMENTO_EMPRESA`,
+  `FIM_DO_CURSO` ou `DESCUMPRIMENTO_CONTRATUAL`.
+- O `codigoCentroCusto` deve ser informado para fins de auditoria.
+- A rescisão é definitiva e gera um protocolo para consulta.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/rescisao-contrato" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idContrato": "ctr_itau_2026_014",
+    "idCadastro": "cad_2d7e5a14",
+    "codigoCentroCusto": "CC-ITAU-4412",
+    "dataRescisao": "2027-04-30",
+    "motivo": "DESLIGAMENTO_EMPRESA",
+    "observacao": "Encerramento do programa de estágio na unidade."
+  }'
+```
+
+```json
+{
+  "idContrato": "ctr_itau_2026_014",
+  "idCadastro": "cad_2d7e5a14",
+  "codigoCentroCusto": "CC-ITAU-4412",
+  "dataRescisao": "2027-04-30",
+  "motivo": "DESLIGAMENTO_EMPRESA",
+  "observacao": "Encerramento do programa de estágio na unidade."
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "idContrato": "ctr_itau_2026_014",
+  "status": "SUCESSO",
+  "protocolo": "prt_5b18a3f7",
+  "statusContrato": "RESCINDIDO",
+  "dataRescisao": "2027-04-30",
+  "mensagem": "Rescisão de contrato processada com sucesso.",
+  "dataProcessamento": "2027-04-30T10:05:44Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Rescisão processada com sucesso. |
+| `201` | Rescisão registrada e enviada para validação assíncrona. |
+| `400` | Dado inválido, motivo não permitido, data inválida ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao processar a rescisão. |

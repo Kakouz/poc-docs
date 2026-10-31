@@ -1,0 +1,87 @@
+---
+sidebar_position: 8
+title: Enviar Contrato Assinado (Base64)
+---
+
+# Enviar Contrato Assinado (Base64)
+
+Recebe o TCE ou TA assinado de um contrato do Itaú, em Base64, e conclui a etapa
+de assinatura.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/receber-contrato-assinado
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- `idDocumento` deve referenciar um TCE ou TA gerado para o contrato Itaú.
+- O arquivo deve ser um PDF válido, codificado em Base64, com no máximo
+  **10 MB**.
+- O `nomeArquivo` deve terminar com `.pdf`.
+- O campo `arquivoBase64` deve conter apenas a string Base64, sem o prefixo
+  `data:application/pdf;base64,`.
+- Após o processamento, o documento passa para o status `ASSINADO` e fica
+  disponível para a ativação do contrato.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/receber-contrato-assinado" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idDocumento": "doc_tce_7a12f4c8",
+    "nomeArquivo": "termo_assinado_123.pdf",
+    "arquivoBase64": "JVBERi0xLjUN...[string base64 truncada]"
+  }'
+```
+
+```json
+{
+  "idDocumento": "doc_tce_7a12f4c8",
+  "nomeArquivo": "termo_assinado_123.pdf",
+  "arquivoBase64": "JVBERi0xLjUN...[string base64 truncada]"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "idDocumento": "doc_tce_7a12f4c8",
+  "status": "SUCESSO",
+  "protocolo": "prt_9c34e7d2",
+  "nomeArquivo": "termo_assinado_123.pdf",
+  "statusDocumento": "ASSINADO",
+  "mensagem": "Contrato assinado recebido e processado com sucesso.",
+  "dataProcessamento": "2026-10-31T19:21:07Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Documento assinado recebido e processado com sucesso. |
+| `201` | Documento armazenado e enviado para validação assíncrona. |
+| `400` | Dado inválido, arquivo Base64 inválido, PDF ausente ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao processar o documento assinado. |

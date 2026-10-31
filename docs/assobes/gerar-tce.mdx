@@ -1,0 +1,112 @@
+---
+sidebar_position: 6
+title: Gerar TCE (Termo de Compromisso)
+---
+
+# Gerar TCE (Termo de Compromisso)
+
+Gera o Termo de Compromisso de Estágio (TCE) para um cadastro e contrato
+previamente validados no Grupo Assobes.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/gerar-tce
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- O cadastro deve existir e estar com os dados pessoais e de escolaridade
+  completos.
+- O contrato precisa estar `ATIVO` e com supervisor, curso e local de estágio
+  vinculados.
+- A geração do TCE **não** conclui a contratação: o documento deve ser assinado
+  e enviado pela rota
+  [`receber-contrato-assinado`](/docs/assobes/receber-contrato-assinado).
+- O `idDocumento` retornado é obrigatório nas etapas de assinatura e aditivo.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/gerar-tce" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCadastro": "cad_8f3b2c91",
+    "contratoId": "ctr_assobes_2026_001",
+    "dataInicio": "2026-11-03",
+    "dataFim": "2027-11-02",
+    "supervisorId": "sup_1024",
+    "cursoId": "cur_310",
+    "localEstagioId": "loc_220",
+    "jornadaSemanal": 30,
+    "valorBolsa": 1800.00,
+    "dadosBancarios": {
+      "banco": "341",
+      "agencia": "1234",
+      "conta": "56789-0",
+      "tipoConta": "CORRENTE"
+    }
+  }'
+```
+
+```json
+{
+  "idCadastro": "cad_8f3b2c91",
+  "contratoId": "ctr_assobes_2026_001",
+  "dataInicio": "2026-11-03",
+  "dataFim": "2027-11-02",
+  "supervisorId": "sup_1024",
+  "cursoId": "cur_310",
+  "localEstagioId": "loc_220",
+  "jornadaSemanal": 30,
+  "valorBolsa": 1800.00,
+  "dadosBancarios": {
+    "banco": "341",
+    "agencia": "1234",
+    "conta": "56789-0",
+    "tipoConta": "CORRENTE"
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "idDocumento": "doc_tce_9c41a7e2",
+  "status": "SUCESSO",
+  "tipoDocumento": "TCE",
+  "idCadastro": "cad_8f3b2c91",
+  "contratoId": "ctr_assobes_2026_001",
+  "urlDocumento": "https://docs.ciee.org.br/tce/doc_tce_9c41a7e2.pdf",
+  "mensagem": "TCE gerado com sucesso.",
+  "dataGeracao": "2026-10-31T16:12:55Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `201` | TCE gerado com sucesso. |
+| `200` | TCE já existente para o contrato e retornado sem nova geração. |
+| `400` | Dado inválido, cadastro incompleto ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao gerar o TCE. |

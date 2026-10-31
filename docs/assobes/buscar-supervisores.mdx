@@ -1,0 +1,95 @@
+---
+sidebar_position: 3
+title: Buscar Supervisores
+---
+
+# Buscar Supervisores
+
+Lista os supervisores ativos disponíveis para vinculação a um contrato de
+estágio do Grupo Assobes.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-supervisores?contratoId=ctr_assobes_2026_001&nome=Ana
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- `contratoId` é obrigatório e restringe a busca aos supervisores vinculados ao
+  contrato.
+- O filtro `nome` é opcional e realiza busca parcial, sem diferenciar
+  maiúsculas de minúsculas.
+- Apenas supervisores com status `ATIVO` são retornados.
+- A resposta é paginada por `page` e `size`; o padrão é `page=1` e `size=20`.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-supervisores?contratoId=ctr_assobes_2026_001&nome=Ana&page=1&size=20" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_assobes_2026_001",
+  "nome": "Ana",
+  "page": 1,
+  "size": 20
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "total": 2,
+  "page": 1,
+  "size": 20,
+  "supervisores": [
+    {
+      "id": "sup_1024",
+      "nome": "Ana Paula Ribeiro",
+      "cpf": "390.533.447-05",
+      "email": "ana.ribeiro@assobes.com.br",
+      "cargo": "Coordenadora de Recursos Humanos",
+      "status": "ATIVO"
+    },
+    {
+      "id": "sup_1088",
+      "nome": "Anabela Martins Costa",
+      "cpf": "714.287.910-30",
+      "email": "anabela.costa@assobes.com.br",
+      "cargo": "Analista de RH Sênior",
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente, paginação inválida ou parâmetro fora do formato esperado. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os supervisores. |

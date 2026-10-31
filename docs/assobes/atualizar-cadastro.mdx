@@ -1,0 +1,136 @@
+---
+sidebar_position: 2
+title: Atualizar Cadastro
+---
+
+# Atualizar Cadastro
+
+Atualiza os dados cadastrais do estudante e as informações de contratação
+vinculadas ao contrato do Grupo Assobes.
+
+## Endpoint
+
+```http
+PUT /api/v1/integracao/atualizar-cadastro
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- O `idCadastro` é obrigatório e deve ter sido gerado na rota
+  [`inserir-cadastro`](/docs/assobes/inserir-cadastro).
+- Apenas os campos enviados no payload são atualizados; campos omitidos
+  permanecem inalterados.
+- O telefone, quando enviado, deve seguir o formato `(XX) XXXXXXXXX`.
+- A alteração de supervisor, curso ou local de estágio exige que o vínculo
+  pertença ao contrato informado.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X PUT "https://api.ciee.org.br/api/v1/integracao/atualizar-cadastro" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCadastro": "cad_8f3b2c91",
+    "cpf": "529.982.247-25",
+    "nome": "Mariana Alves de Souza",
+    "email": "mariana.souza@mackenzie.br",
+    "telefone": "(11) 912345678",
+    "endereco": {
+      "cep": "01310-100",
+      "logradouro": "Avenida Paulista",
+      "numero": "1578",
+      "complemento": "Apto 92",
+      "bairro": "Bela Vista",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "escolaridade": {
+      "nivel": "ENSINO_SUPERIOR",
+      "curso": "Administração",
+      "instituicao": "Universidade Presbiteriana Mackenzie",
+      "semestre": 7,
+      "previsaoConclusao": "2027-12"
+    },
+    "contratacao": {
+      "contratoId": "ctr_assobes_2026_001",
+      "supervisorId": "sup_1088",
+      "localEstagioId": "loc_220",
+      "jornadaSemanal": 30,
+      "valorBolsa": 1900.00
+    }
+  }'
+```
+
+```json
+{
+  "idCadastro": "cad_8f3b2c91",
+  "cpf": "529.982.247-25",
+  "nome": "Mariana Alves de Souza",
+  "email": "mariana.souza@mackenzie.br",
+  "telefone": "(11) 912345678",
+  "endereco": {
+    "cep": "01310-100",
+    "logradouro": "Avenida Paulista",
+    "numero": "1578",
+    "complemento": "Apto 92",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "escolaridade": {
+    "nivel": "ENSINO_SUPERIOR",
+    "curso": "Administração",
+    "instituicao": "Universidade Presbiteriana Mackenzie",
+    "semestre": 7,
+    "previsaoConclusao": "2027-12"
+  },
+  "contratacao": {
+    "contratoId": "ctr_assobes_2026_001",
+    "supervisorId": "sup_1088",
+    "localEstagioId": "loc_220",
+    "jornadaSemanal": 30,
+    "valorBolsa": 1900.00
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "id": "cad_8f3b2c91",
+  "status": "SUCESSO",
+  "mensagem": "Cadastro atualizado com sucesso.",
+  "cpf": "529.982.247-25",
+  "contratoId": "ctr_assobes_2026_001",
+  "acao": "ATUALIZADO",
+  "dataProcessamento": "2026-10-31T15:04:41Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Cadastro atualizado com sucesso. |
+| `201` | Cadastro não encontrado e criado como novo registro. |
+| `400` | Dado inválido, campo obrigatório ausente ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao atualizar o cadastro. |

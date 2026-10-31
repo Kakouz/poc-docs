@@ -1,0 +1,120 @@
+---
+sidebar_position: 2
+title: Atualizar Cadastro
+---
+
+# Atualizar Cadastro
+
+Atualiza os dados cadastrais e as informações contratuais do estudante vinculado
+a um contrato do Itaú.
+
+## Endpoint
+
+```http
+PUT /api/v1/integracao/atualizar-cadastro
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- O `idCadastro` é obrigatório e deve ter sido gerado na rota
+  [`inserir-cadastro`](/docs/itau/inserir-cadastro).
+- Apenas os campos enviados são atualizados; os demais permanecem inalterados.
+- O telefone, quando enviado, deve seguir o formato `(XX) XXXXXXXXX`.
+- Alterações de `codigoCentroCusto` ou `matriculaGestor` precisam ser
+  compatíveis com o contrato Itaú informado.
+- A troca de supervisor, curso ou local exige vínculo ativo com o contrato.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X PUT "https://api.ciee.org.br/api/v1/integracao/atualizar-cadastro" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCadastro": "cad_2d7e5a14",
+    "cpf": "987.654.321-00",
+    "nome": "Lucas Ferreira Lima",
+    "email": "lucas.lima@usp.br",
+    "telefone": "(11) 977665544",
+    "escolaridade": {
+      "nivel": "ENSINO_SUPERIOR",
+      "curso": "Ciência da Computação",
+      "instituicao": "Universidade de São Paulo",
+      "semestre": 6,
+      "previsaoConclusao": "2028-06"
+    },
+    "contratacao": {
+      "contratoId": "ctr_itau_2026_014",
+      "codigoCentroCusto": "CC-ITAU-4412",
+      "matriculaGestor": "G-88231",
+      "supervisorId": "sup_2099",
+      "jornadaSemanal": 30,
+      "valorBolsa": 2350.00
+    }
+  }'
+```
+
+```json
+{
+  "idCadastro": "cad_2d7e5a14",
+  "cpf": "987.654.321-00",
+  "nome": "Lucas Ferreira Lima",
+  "email": "lucas.lima@usp.br",
+  "telefone": "(11) 977665544",
+  "escolaridade": {
+    "nivel": "ENSINO_SUPERIOR",
+    "curso": "Ciência da Computação",
+    "instituicao": "Universidade de São Paulo",
+    "semestre": 6,
+    "previsaoConclusao": "2028-06"
+  },
+  "contratacao": {
+    "contratoId": "ctr_itau_2026_014",
+    "codigoCentroCusto": "CC-ITAU-4412",
+    "matriculaGestor": "G-88231",
+    "supervisorId": "sup_2099",
+    "jornadaSemanal": 30,
+    "valorBolsa": 2350.00
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "id": "cad_2d7e5a14",
+  "status": "SUCESSO",
+  "mensagem": "Cadastro atualizado com sucesso.",
+  "cpf": "987.654.321-00",
+  "contratoId": "ctr_itau_2026_014",
+  "acao": "ATUALIZADO",
+  "dataProcessamento": "2026-10-31T18:42:03Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Cadastro atualizado com sucesso. |
+| `201` | Cadastro não encontrado e criado como novo registro. |
+| `400` | Dado inválido, campo obrigatório ausente ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao atualizar o cadastro. |

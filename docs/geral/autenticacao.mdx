@@ -1,0 +1,89 @@
+---
+sidebar_position: 2
+title: Autenticação & Token
+---
+
+# Autenticação & Token
+
+Autentica o cliente e devolve o token JWT que deve ser enviado em todas as
+chamadas subsequentes da API.
+
+## Endpoint
+
+```http
+POST /auth/login/integracao
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Content-Type` | `application/json` | Sim |
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/auth/login/integracao" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "clientId": "ASSOBES_PRD",
+    "clientSecret": "sec_key_xxx"
+  }'
+```
+
+```json
+{
+  "clientId": "ASSOBES_PRD",
+  "clientSecret": "sec_key_xxx"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "token": "eyJhbGciOi...",
+  "expiresIn": 3600,
+  "tokenType": "Bearer"
+}
+```
+
+## Como usar o token
+
+O token retornado é um **JWT** e deve ser enviado no header `Authorization` de
+**todas** as chamadas subsequentes:
+
+```http
+Authorization: Bearer eyJhbGciOi...
+```
+
+:::warning Token obrigatório
+
+- O token expira em `3600` segundos (1 hora).
+- Requisições sem token, com token inválido ou expirado retornam `401`.
+- Não envie `clientId` ou `clientSecret` nas demais rotas: o cliente é
+  identificado exclusivamente pelo token.
+- Solicite um novo token antes do vencimento para evitar interrupções na
+  integração.
+
+:::
+
+## Clientes disponíveis
+
+| `clientId` | Escopo |
+| --- | --- |
+| `ASSOBES_PRD` | Grupo Assobes |
+| `ITAU_PRD` | Itaú (escopo estendido, incluindo prorrogação) |
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Autenticação realizada e token emitido. |
+| `400` | Payload inválido ou campos obrigatórios ausentes. |
+| `401` | `clientId` ou `clientSecret` inválidos. |
+| `500` | Erro interno ao emitir o token. |

@@ -1,0 +1,97 @@
+---
+sidebar_position: 11
+title: "Prorrogação: Alterar Dados do Contrato"
+---
+
+# Prorrogação: Alterar Dados do Contrato
+
+Altera as condições contratuais durante o fluxo de prorrogação de um contrato de
+estágio do Itaú.
+
+## Endpoint
+
+```http
+PUT /api/v1/integracao/prorrogacao/alterar-dados-contrato
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- Rota exclusiva do escopo estendido do Itaú.
+- O contrato precisa estar `ATIVO` e possuir uma prorrogação em andamento.
+- Informe ao menos um dos campos: `novaDataFim`, `novoValorBolsa`,
+  `novaJornadaSemanal` ou `novoLocalEstagioId`.
+- A `novaDataFim` deve ser posterior à data de término atual do contrato.
+- A jornada semanal deve respeitar o limite legal e a política do contrato.
+- Após a alteração, gere o TA correspondente pela rota
+  [`gerar-ta`](/docs/itau/gerar-ta).
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X PUT "https://api.ciee.org.br/api/v1/integracao/prorrogacao/alterar-dados-contrato" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idContrato": "ctr_itau_2026_014",
+    "idProrrogacao": "prg_6f2a91c3",
+    "novaDataFim": "2028-11-09",
+    "novoValorBolsa": 2400.00,
+    "novaJornadaSemanal": 30,
+    "novoLocalEstagioId": "loc_315",
+    "observacao": "Prorrogação aprovada com reajuste de bolsa e manutenção da jornada."
+  }'
+```
+
+```json
+{
+  "idContrato": "ctr_itau_2026_014",
+  "idProrrogacao": "prg_6f2a91c3",
+  "novaDataFim": "2028-11-09",
+  "novoValorBolsa": 2400.00,
+  "novaJornadaSemanal": 30,
+  "novoLocalEstagioId": "loc_315",
+  "observacao": "Prorrogação aprovada com reajuste de bolsa e manutenção da jornada."
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "idContrato": "ctr_itau_2026_014",
+  "idProrrogacao": "prg_6f2a91c3",
+  "status": "SUCESSO",
+  "dataFimAnterior": "2027-11-09",
+  "novaDataFim": "2028-11-09",
+  "valorBolsaAnterior": 2200.00,
+  "novoValorBolsa": 2400.00,
+  "mensagem": "Dados da prorrogação atualizados com sucesso.",
+  "dataProcessamento": "2026-10-31T20:18:51Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Dados da prorrogação atualizados com sucesso. |
+| `201` | Alteração registrada e enviada para validação assíncrona. |
+| `400` | Dado inválido, nenhuma alteração informada ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao alterar os dados da prorrogação. |

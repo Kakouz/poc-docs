@@ -1,0 +1,146 @@
+---
+sidebar_position: 1
+title: Inserir / Criar Cadastro
+---
+
+# Inserir / Criar Cadastro
+
+Cria o cadastro do estudante e, quando os dados de contratação forem enviados,
+vincula o cadastro ao contrato de estágio do Grupo Assobes.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/inserir-cadastro
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- O telefone deve obrigatoriamente seguir o formato `(XX) XXXXXXXXX`.
+- Se o CPF já existir, a API realiza um **upsert**: atualiza o cadastro
+  existente em vez de criar um duplicado.
+- `contratoId`, `supervisorId`, `cursoId` e `localEstagioId` precisam pertencer
+  ao mesmo contrato informado.
+- O retorno `201` indica criação; o retorno `200` indica atualização de um
+  cadastro já existente.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/inserir-cadastro" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf": "529.982.247-25",
+    "nome": "Mariana Alves de Souza",
+    "dataNascimento": "2002-04-18",
+    "sexo": "F",
+    "email": "mariana.souza@example.com",
+    "telefone": "(11) 987654321",
+    "endereco": {
+      "cep": "01310-100",
+      "logradouro": "Avenida Paulista",
+      "numero": "1578",
+      "complemento": "Apto 92",
+      "bairro": "Bela Vista",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "escolaridade": {
+      "nivel": "ENSINO_SUPERIOR",
+      "curso": "Administração",
+      "instituicao": "Universidade Presbiteriana Mackenzie",
+      "semestre": 6,
+      "previsaoConclusao": "2027-12"
+    },
+    "contratacao": {
+      "contratoId": "ctr_assobes_2026_001",
+      "cargo": "Estagiário de Administração",
+      "jornadaSemanal": 30,
+      "valorBolsa": 1800.00,
+      "dataInicio": "2026-11-03",
+      "dataFim": "2027-11-02",
+      "supervisorId": "sup_1024",
+      "cursoId": "cur_310",
+      "localEstagioId": "loc_220"
+    }
+  }'
+```
+
+```json
+{
+  "cpf": "529.982.247-25",
+  "nome": "Mariana Alves de Souza",
+  "dataNascimento": "2002-04-18",
+  "sexo": "F",
+  "email": "mariana.souza@example.com",
+  "telefone": "(11) 987654321",
+  "endereco": {
+    "cep": "01310-100",
+    "logradouro": "Avenida Paulista",
+    "numero": "1578",
+    "complemento": "Apto 92",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "uf": "SP"
+  },
+  "escolaridade": {
+    "nivel": "ENSINO_SUPERIOR",
+    "curso": "Administração",
+    "instituicao": "Universidade Presbiteriana Mackenzie",
+    "semestre": 6,
+    "previsaoConclusao": "2027-12"
+  },
+  "contratacao": {
+    "contratoId": "ctr_assobes_2026_001",
+    "cargo": "Estagiário de Administração",
+    "jornadaSemanal": 30,
+    "valorBolsa": 1800.00,
+    "dataInicio": "2026-11-03",
+    "dataFim": "2027-11-02",
+    "supervisorId": "sup_1024",
+    "cursoId": "cur_310",
+    "localEstagioId": "loc_220"
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "id": "cad_8f3b2c91",
+  "status": "SUCESSO",
+  "mensagem": "Cadastro processado com sucesso.",
+  "cpf": "529.982.247-25",
+  "contratoId": "ctr_assobes_2026_001",
+  "acao": "CRIADO",
+  "dataProcessamento": "2026-10-31T14:32:08Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `201` | Cadastro criado com sucesso. |
+| `200` | Cadastro existente atualizado via upsert. |
+| `400` | Dado inválido, campo obrigatório ausente ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao processar o cadastro. |

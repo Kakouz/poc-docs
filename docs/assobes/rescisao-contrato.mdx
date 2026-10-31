@@ -1,0 +1,90 @@
+---
+sidebar_position: 9
+title: Rescisão de Contrato
+---
+
+# Rescisão de Contrato
+
+Encerra antecipadamente um contrato de estágio ativo do Grupo Assobes e registra
+o motivo da rescisão.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/rescisao-contrato
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- O contrato precisa estar `ATIVO` ou `ASSINADO` para ser rescindido.
+- A `dataRescisao` não pode ser anterior à data de início do contrato nem
+  posterior à data atual.
+- O motivo deve ser um dos valores permitidos: `DESLIGAMENTO_ESTUDANTE`,
+  `DESLIGAMENTO_EMPRESA`, `FIM_DO_CURSO` ou `DESCUMPRIMENTO_CONTRATUAL`.
+- A rescisão é definitiva e não pode ser desfeita por esta API.
+- O processo gera um protocolo para consulta e auditoria.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/rescisao-contrato" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idContrato": "ctr_assobes_2026_001",
+    "idCadastro": "cad_8f3b2c91",
+    "dataRescisao": "2027-05-15",
+    "motivo": "DESLIGAMENTO_ESTUDANTE",
+    "observacao": "Estudante solicitou o encerramento antecipado do contrato."
+  }'
+```
+
+```json
+{
+  "idContrato": "ctr_assobes_2026_001",
+  "idCadastro": "cad_8f3b2c91",
+  "dataRescisao": "2027-05-15",
+  "motivo": "DESLIGAMENTO_ESTUDANTE",
+  "observacao": "Estudante solicitou o encerramento antecipado do contrato."
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "idContrato": "ctr_assobes_2026_001",
+  "status": "SUCESSO",
+  "protocolo": "prt_3d90f6a1",
+  "statusContrato": "RESCINDIDO",
+  "dataRescisao": "2027-05-15",
+  "mensagem": "Rescisão de contrato processada com sucesso.",
+  "dataProcessamento": "2027-05-15T13:20:09Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Rescisão processada com sucesso. |
+| `201` | Rescisão registrada e enviada para validação assíncrona. |
+| `400` | Dado inválido, motivo não permitido, data inválida ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao processar a rescisão. |

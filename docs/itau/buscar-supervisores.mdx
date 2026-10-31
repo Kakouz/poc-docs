@@ -1,0 +1,98 @@
+---
+sidebar_position: 3
+title: Buscar Supervisores
+---
+
+# Buscar Supervisores
+
+Lista os supervisores ativos disponíveis para vinculação aos contratos do Itaú.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-supervisores?contratoId=ctr_itau_2026_014&nome=Rafael
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- `contratoId` é obrigatório e restringe a busca aos supervisores do contrato
+  Itaú informado.
+- O filtro `nome` é opcional e realiza busca parcial.
+- Apenas supervisores com status `ATIVO` e com centro de custo compatível são
+  retornados.
+- A resposta é paginada por `page` e `size`; o padrão é `page=1` e `size=20`.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-supervisores?contratoId=ctr_itau_2026_014&nome=Rafael&page=1&size=20" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_itau_2026_014",
+  "nome": "Rafael",
+  "page": 1,
+  "size": 20
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "total": 2,
+  "page": 1,
+  "size": 20,
+  "supervisores": [
+    {
+      "id": "sup_2087",
+      "nome": "Rafael Nogueira de Almeida",
+      "cpf": "286.119.480-07",
+      "email": "rafael.almeida@itau.com.br",
+      "cargo": "Gerente de Tecnologia",
+      "matriculaGestor": "G-88231",
+      "centroCusto": "CC-ITAU-4412",
+      "status": "ATIVO"
+    },
+    {
+      "id": "sup_2099",
+      "nome": "Rafaela Duarte Pires",
+      "cpf": "845.602.317-44",
+      "email": "rafaela.pires@itau.com.br",
+      "cargo": "Especialista de Plataforma",
+      "matriculaGestor": "G-88410",
+      "centroCusto": "CC-ITAU-4412",
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente, paginação inválida ou parâmetro fora do formato esperado. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os supervisores. |

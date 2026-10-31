@@ -1,0 +1,96 @@
+---
+sidebar_position: 7
+title: Gerar TA (Termo Aditivo)
+---
+
+# Gerar TA (Termo Aditivo)
+
+Gera um Termo Aditivo (TA) para alterar condições do contrato de estágio do
+Grupo Assobes.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/gerar-ta
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- O contrato original precisa estar `ATIVO` e possuir um TCE gerado.
+- `idDocumentoOriginal` deve referenciar o TCE retornado por
+  [`gerar-tce`](/docs/assobes/gerar-tce).
+- O TA pode alterar data de término, valor da bolsa e jornada semanal.
+- Assim como o TCE, o TA precisa ser assinado e enviado pela rota
+  [`receber-contrato-assinado`](/docs/assobes/receber-contrato-assinado).
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/gerar-ta" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idContrato": "ctr_assobes_2026_001",
+    "idDocumentoOriginal": "doc_tce_9c41a7e2",
+    "tipoAditivo": "PRORROGACAO",
+    "dataVigencia": "2027-11-03",
+    "novaDataFim": "2028-11-02",
+    "novoValorBolsa": 1950.00,
+    "novaJornadaSemanal": 30,
+    "motivo": "Prorrogação do contrato conforme política interna de estágio."
+  }'
+```
+
+```json
+{
+  "idContrato": "ctr_assobes_2026_001",
+  "idDocumentoOriginal": "doc_tce_9c41a7e2",
+  "tipoAditivo": "PRORROGACAO",
+  "dataVigencia": "2027-11-03",
+  "novaDataFim": "2028-11-02",
+  "novoValorBolsa": 1950.00,
+  "novaJornadaSemanal": 30,
+  "motivo": "Prorrogação do contrato conforme política interna de estágio."
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "idDocumento": "doc_ta_4b7e1d90",
+  "status": "SUCESSO",
+  "tipoDocumento": "TA",
+  "idContrato": "ctr_assobes_2026_001",
+  "idDocumentoOriginal": "doc_tce_9c41a7e2",
+  "urlDocumento": "https://docs.ciee.org.br/ta/doc_ta_4b7e1d90.pdf",
+  "mensagem": "Termo aditivo gerado com sucesso.",
+  "dataGeracao": "2026-10-31T16:30:14Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `201` | Termo aditivo gerado com sucesso. |
+| `200` | Termo aditivo já existente e retornado sem nova geração. |
+| `400` | Dado inválido, contrato inelegível ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao gerar o termo aditivo. |

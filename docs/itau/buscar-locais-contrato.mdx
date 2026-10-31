@@ -1,0 +1,102 @@
+---
+sidebar_position: 5
+title: Buscar Locais de Estágio
+---
+
+# Buscar Locais de Estágio
+
+Lista os locais de estágio autorizados para os contratos do Itaú.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-locais-contrato?contratoId=ctr_itau_2026_014
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- `contratoId` é obrigatório e limita a consulta aos locais vinculados ao
+  contrato Itaú.
+- Os filtros `cidade` e `uf` são opcionais.
+- Apenas locais ativos, com centro de custo compatível e vagas disponíveis são
+  retornados.
+- O `localEstagioId` retornado deve ser usado nas rotas `inserir-cadastro`,
+  `atualizar-cadastro` e `gerar-tce`.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-locais-contrato?contratoId=ctr_itau_2026_014&cidade=São%20Paulo&uf=SP" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_itau_2026_014",
+  "cidade": "São Paulo",
+  "uf": "SP"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "contratoId": "ctr_itau_2026_014",
+  "locais": [
+    {
+      "id": "loc_315",
+      "nome": "Itaú — Torre Berrini",
+      "cnpj": "60.872.504/0001-23",
+      "endereco": "Avenida Engenheiro Luís Carlos Berrini, 1376",
+      "bairro": "Cidade Monções",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "cep": "04571-010",
+      "centroCusto": "CC-ITAU-4412",
+      "vagasDisponiveis": 12,
+      "status": "ATIVO"
+    },
+    {
+      "id": "loc_327",
+      "nome": "Itaú — Centro Tecnológico",
+      "cnpj": "60.872.504/0002-04",
+      "endereco": "Avenida Rebouças, 3970",
+      "bairro": "Pinheiros",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "cep": "05402-600",
+      "centroCusto": "CC-ITAU-4412",
+      "vagasDisponiveis": 5,
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente, UF inválida ou parâmetro fora do formato esperado. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os locais de estágio. |

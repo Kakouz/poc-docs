@@ -1,0 +1,117 @@
+---
+sidebar_position: 6
+title: Gerar TCE (Termo de Compromisso)
+---
+
+# Gerar TCE (Termo de Compromisso)
+
+Gera o Termo de Compromisso de Estágio (TCE) para um cadastro vinculado a um
+contrato do Itaú.
+
+## Endpoint
+
+```http
+POST /api/v1/integracao/gerar-tce
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ITAU_PRD`.
+
+:::info Escopo Itaú e regras de negócio
+
+- O cadastro deve estar completo e vinculado a um contrato Itaú ativo.
+- `codigoCentroCusto` e `matriculaGestor` precisam ser compatíveis com o
+  contrato informado.
+- A geração do TCE não conclui a contratação: o PDF assinado deve ser enviado
+  pela rota
+  [`receber-contrato-assinado`](/docs/itau/receber-contrato-assinado).
+- O `idDocumento` retornado é obrigatório nas etapas de assinatura, aditivo e
+  prorrogação.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X POST "https://api.ciee.org.br/api/v1/integracao/gerar-tce" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCadastro": "cad_2d7e5a14",
+    "contratoId": "ctr_itau_2026_014",
+    "codigoCentroCusto": "CC-ITAU-4412",
+    "matriculaGestor": "G-88231",
+    "dataInicio": "2026-11-10",
+    "dataFim": "2027-11-09",
+    "supervisorId": "sup_2087",
+    "cursoId": "cur_422",
+    "localEstagioId": "loc_315",
+    "jornadaSemanal": 30,
+    "valorBolsa": 2200.00,
+    "dadosBancarios": {
+      "banco": "341",
+      "agencia": "1234",
+      "conta": "56789-0",
+      "tipoConta": "CORRENTE"
+    }
+  }'
+```
+
+```json
+{
+  "idCadastro": "cad_2d7e5a14",
+  "contratoId": "ctr_itau_2026_014",
+  "codigoCentroCusto": "CC-ITAU-4412",
+  "matriculaGestor": "G-88231",
+  "dataInicio": "2026-11-10",
+  "dataFim": "2027-11-09",
+  "supervisorId": "sup_2087",
+  "cursoId": "cur_422",
+  "localEstagioId": "loc_315",
+  "jornadaSemanal": 30,
+  "valorBolsa": 2200.00,
+  "dadosBancarios": {
+    "banco": "341",
+    "agencia": "1234",
+    "conta": "56789-0",
+    "tipoConta": "CORRENTE"
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "idDocumento": "doc_tce_7a12f4c8",
+  "status": "SUCESSO",
+  "tipoDocumento": "TCE",
+  "idCadastro": "cad_2d7e5a14",
+  "contratoId": "ctr_itau_2026_014",
+  "codigoCentroCusto": "CC-ITAU-4412",
+  "urlDocumento": "https://docs.ciee.org.br/tce/doc_tce_7a12f4c8.pdf",
+  "mensagem": "TCE gerado com sucesso.",
+  "dataGeracao": "2026-10-31T18:55:19Z"
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `201` | TCE gerado com sucesso. |
+| `200` | TCE já existente para o contrato e retornado sem nova geração. |
+| `400` | Dado inválido, cadastro incompleto ou telefone fora do padrão `(XX) XXXXXXXXX`. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao gerar o TCE. |

@@ -11,10 +11,12 @@ definitivo.
 ## O que tem no site
 
 - Página inicial com hero corporativo e cards de público/uso.
-- **Introdução** (`/docs/geral/introducao`) com o escopo e o público-alvo.
-- **Clientes** (`/docs/category/clientes`) com a visão segmentada por conta.
-- **API de exemplo** (`/docs/apis/exemplo`) com endpoint, parâmetros, exemplo de
-  requisição/resposta e códigos de status.
+- **Geral (Comum)**: introdução e autenticação via `POST /auth/login/integracao`.
+- **Grupo Assobes**: 9 rotas do fluxo de contratação, do cadastro à rescisão.
+- **Itaú (Escopo Estendido)**: as mesmas 9 rotas do Assobes, acrescidas de
+  prorrogação com alteração de supervisor e de dados do contrato.
+- **Clientes** (`/docs/clientes/visao-por-cliente`): página de entrada
+  segmentada por conta integrada.
 
 O blog, os tutoriais e as páginas de exemplo do template original foram removidos.
 
@@ -60,9 +62,10 @@ npm run serve
 ```text
 .
 ├── docs/                  # Conteúdo da documentação (Markdown/MDX)
-│   ├── geral/             # Introdução e visão geral
-│   ├── clientes/          # Documentação segmentada por cliente
-│   └── apis/              # Referência das APIs
+│   ├── geral/             # Introdução e autenticação
+│   ├── assobes/           # Rotas do Grupo Assobes
+│   ├── itau/              # Rotas do Itaú (escopo estendido)
+│   └── clientes/          # Visão segmentada por cliente
 ├── src/
 │   ├── css/custom.css     # Tema e variáveis de estilo
 │   └── pages/index.tsx    # Página inicial

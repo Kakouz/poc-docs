@@ -60,7 +60,7 @@ const config: Config = {
           label: 'Documentação',
         },
         {
-          to: '/docs/category/clientes',
+          to: '/docs/clientes/visao-por-cliente',
           label: 'Clientes',
           position: 'left',
         },
@@ -88,12 +88,16 @@ const config: Config = {
               to: '/docs/geral/introducao',
             },
             {
-              label: 'Clientes homologados',
-              to: '/docs/category/clientes',
+              label: 'Autenticação',
+              to: '/docs/geral/autenticacao',
             },
             {
-              label: 'APIs',
-              to: '/docs/apis/exemplo',
+              label: 'Grupo Assobes',
+              to: '/docs/assobes/inserir-cadastro',
+            },
+            {
+              label: 'Itaú',
+              to: '/docs/itau/inserir-cadastro',
             },
           ],
         },

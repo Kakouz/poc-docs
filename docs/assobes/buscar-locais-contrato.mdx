@@ -1,0 +1,99 @@
+---
+sidebar_position: 5
+title: Buscar Locais de Estágio
+---
+
+# Buscar Locais de Estágio
+
+Lista os locais de estágio autorizados para o contrato do Grupo Assobes.
+
+## Endpoint
+
+```http
+GET /api/v1/integracao/buscar-locais-contrato?contratoId=ctr_assobes_2026_001
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Accept` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `ASSOBES_PRD`.
+
+:::info Regras de negócio
+
+- `contratoId` é obrigatório e limita a consulta aos locais vinculados ao
+  contrato.
+- Os filtros `cidade` e `uf` são opcionais.
+- Apenas locais com status `ATIVO` e com vagas disponíveis são retornados.
+- O `localEstagioId` retornado deve ser usado nas rotas `inserir-cadastro` e
+  `gerar-tce`.
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X GET "https://api.ciee.org.br/api/v1/integracao/buscar-locais-contrato?contratoId=ctr_assobes_2026_001&cidade=São%20Paulo&uf=SP" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Accept: application/json"
+```
+
+```json
+{
+  "contratoId": "ctr_assobes_2026_001",
+  "cidade": "São Paulo",
+  "uf": "SP"
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "status": "SUCESSO",
+  "contratoId": "ctr_assobes_2026_001",
+  "locais": [
+    {
+      "id": "loc_220",
+      "nome": "Assobes — Unidade Paulista",
+      "cnpj": "12.345.678/0001-90",
+      "endereco": "Avenida Paulista, 1000",
+      "bairro": "Bela Vista",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "cep": "01310-100",
+      "vagasDisponiveis": 8,
+      "status": "ATIVO"
+    },
+    {
+      "id": "loc_231",
+      "nome": "Assobes — Unidade Vila Olímpia",
+      "cnpj": "12.345.678/0002-71",
+      "endereco": "Rua Fidêncio Ramos, 302",
+      "bairro": "Vila Olímpia",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "cep": "04551-010",
+      "vagasDisponiveis": 3,
+      "status": "ATIVO"
+    }
+  ]
+}
+```
+
+## Códigos de status
+
+| Código | Descrição |
+| --- | --- |
+| `200` | Consulta realizada com sucesso, com ou sem resultados. |
+| `400` | `contratoId` ausente, UF inválida ou parâmetro fora do formato esperado. |
+| `401` | Token ausente, inválido ou expirado. |
+| `500` | Erro interno ao consultar os locais de estágio. |
