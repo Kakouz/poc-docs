@@ -24,7 +24,7 @@ POST /api/v1/integracao/rescisao-contrato
 Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
 utilizando o `clientId` `ASSOBES_PRD`.
 
-:::info Regras de negócio
+:::info[Regras de negócio]
 
 - O contrato precisa estar `ATIVO` ou `ASSINADO` para ser rescindido.
 - A `dataRescisao` não pode ser anterior à data de início do contrato nem
