@@ -71,6 +71,7 @@ npm run serve
 │   └── pages/index.tsx    # Página inicial
 ├── templates-docs/        # Template de endpoint e plano de automação
 ├── static/                # Arquivos estáticos (imagens, .nojekyll)
+├── ARQUITETURA-EVOLUCAO.md # Arquitetura alvo: multi-tenant, versões, acesso e CI/CD
 ├── docusaurus.config.ts   # Configuração do site (URL, navbar, rodapé...)
 ├── sidebars.ts            # Menu lateral explícito do portal
 └── .github/workflows/     # Deploy automático no GitHub Pages
@@ -88,6 +89,21 @@ catálogo:
   roadmap.
 
 O template fica fora de `docs/` de propósito e não é publicado no portal.
+
+## Arquitetura e evolução
+
+O documento [`ARQUITETURA-EVOLUCAO.md`](ARQUITETURA-EVOLUCAO.md) descreve como a
+POC evolui para produção, com foco nas perguntas de gestão e PO:
+
+- **Multi-tenant:** um artefato e um hostname por cliente, sem filtro de conteúdo
+  em runtime.
+- **Versionamento:** uso nativo do Docusaurus (`v1`, `v2`) com política de
+  depreciação.
+- **Segurança:** proteção de borda por cliente (Cloudflare Access, IP allowlist,
+  mTLS) e o que não deve ser feito.
+- **Governança:** documentação no mesmo PR do backend, checks obrigatórios no CI,
+  preview protegido e detecção de divergência.
+- **Roadmap, riscos e decisões pendentes** para a liderança.
 
 ## Deploy no GitHub Pages
 
