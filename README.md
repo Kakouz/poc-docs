@@ -69,11 +69,25 @@ npm run serve
 ├── src/
 │   ├── css/custom.css     # Tema e variáveis de estilo
 │   └── pages/index.tsx    # Página inicial
+├── templates-docs/        # Template de endpoint e plano de automação
 ├── static/                # Arquivos estáticos (imagens, .nojekyll)
 ├── docusaurus.config.ts   # Configuração do site (URL, navbar, rodapé...)
-├── sidebars.ts            # Sidebar gerada a partir de docs/
+├── sidebars.ts            # Menu lateral explícito do portal
 └── .github/workflows/     # Deploy automático no GitHub Pages
 ```
+
+## Templates e automação
+
+A pasta [`templates-docs/`](templates-docs/) concentra o material de evolução do
+catálogo:
+
+- [`template-endpoint.mdx`](templates-docs/template-endpoint.mdx) — modelo padrão
+  de uma página de endpoint.
+- [`README-AUTOMACAO.md`](templates-docs/README-AUTOMACAO.md) — visão para
+  gestão/PO com as abordagens manual e automatizada, comparativo, riscos e
+  roadmap.
+
+O template fica fora de `docs/` de propósito e não é publicado no portal.
 
 ## Deploy no GitHub Pages
 

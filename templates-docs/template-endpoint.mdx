@@ -1,0 +1,108 @@
+---
+title: "{{titulo_endpoint}}"
+sidebar_position: "{{posicao_sidebar}}"
+---
+
+{/*
+  TEMPLATE OFICIAL DE ENDPOINT — PORTAL DE APIS CIEE
+
+  Como usar:
+  1. Copie este arquivo para docs/<cliente>/<nome-do-endpoint>.mdx.
+  2. Substitua TODOS os placeholders {{...}} pelos valores reais.
+  3. Remova este bloco de comentário antes de publicar.
+  4. Rode `npm run start` para revisar e `npm run build` antes do PR.
+
+  Este arquivo fica fora de docs/ de propósito: ele é um modelo de trabalho,
+  não uma página publicada no portal.
+*/}
+
+# {{titulo_endpoint}}
+
+{{descricao_curta_do_endpoint}}
+
+## Endpoint
+
+```http
+{{metodo_http}} {{uri_endpoint}}
+```
+
+## Cabeçalhos
+
+| Cabeçalho | Valor | Obrigatório |
+| --- | --- | --- |
+| `Authorization` | `Bearer <TOKEN>` | Sim |
+| `Content-Type` | `application/json` | Sim |
+
+Obtenha o token em [`POST /auth/login/integracao`](/docs/geral/autenticacao)
+utilizando o `clientId` `{{client_id}}`.
+
+:::info[Regras de negócio]
+
+- {{regra_negocio_1}}
+- {{regra_negocio_2}}
+- {{regra_negocio_3}}
+
+:::
+
+## Exemplo de requisição
+
+```bash
+curl -X {{metodo_http}} "{{base_url}}{{uri_endpoint}}" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "{{campo_entrada_1}}": "{{valor_exemplo_1}}",
+    "{{campo_entrada_2}}": "{{valor_exemplo_2}}",
+    "{{campo_entrada_3}}": {{valor_numerico_exemplo}},
+    "{{objeto_aninhado}}": {
+      "{{subcampo_1}}": "{{valor_subcampo_1}}",
+      "{{subcampo_2}}": "{{valor_subcampo_2}}"
+    }
+  }'
+```
+
+```json
+{
+  "{{campo_entrada_1}}": "{{valor_exemplo_1}}",
+  "{{campo_entrada_2}}": "{{valor_exemplo_2}}",
+  "{{campo_entrada_3}}": {{valor_numerico_exemplo}},
+  "{{objeto_aninhado}}": {
+    "{{subcampo_1}}": "{{valor_subcampo_1}}",
+    "{{subcampo_2}}": "{{valor_subcampo_2}}"
+  }
+}
+```
+
+## Exemplo de resposta
+
+```http
+HTTP/1.1 {{http_sucesso}} {{motivo_http_sucesso}}
+```
+
+```json
+{
+  "id": "{{id_gerado}}",
+  "status": "SUCESSO",
+  "mensagem": "{{mensagem_sucesso}}",
+  "{{campo_resposta_1}}": "{{valor_resposta_1}}",
+  "dataProcessamento": "{{timestamp_iso_8601}}"
+}
+```
+
+## Códigos de status
+
+| Código | Cenário | Descrição |
+| --- | --- | --- |
+| `{{http_sucesso}}` | Sucesso | {{descricao_sucesso}} |
+| `{{http_validacao}}` | Dado inválido | {{descricao_validacao}} |
+| `{{http_nao_autorizado}}` | Falha de autenticação | {{descricao_nao_autorizado}} |
+| `{{http_erro_interno}}` | Erro inesperado | {{descricao_erro_interno}} |
+
+## Checklist de revisão
+
+- [ ] Todos os placeholders `{{...}}` foram substituídos.
+- [ ] O endpoint foi validado no ambiente de homologação.
+- [ ] Os exemplos usam apenas dados fictícios, sem informações pessoais reais.
+- [ ] As regras de negócio foram revisadas pelo responsável de produto.
+- [ ] A tabela de status contempla os erros previstos pela API.
+- [ ] O build do Docusaurus passou sem links quebrados.
