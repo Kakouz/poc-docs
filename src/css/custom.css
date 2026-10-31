@@ -1,27 +1,146 @@
 /**
- * CSS global do site. O Docusaurus já inclui o Infima por padrão.
- * As variáveis abaixo definem a cor principal do tema (claro e escuro).
+ * Design System do Portal de APIs do CIEE.
+ * O Docusaurus inclui o Infima por padrão; as variáveis abaixo
+ * sobrescrevem o tema claro e o tema escuro.
  */
 
 :root {
-  --ifm-color-primary: #1f6feb;
-  --ifm-color-primary-dark: #1b64d4;
-  --ifm-color-primary-darker: #195ec8;
-  --ifm-color-primary-darkest: #154ea5;
-  --ifm-color-primary-light: #3a80ee;
-  --ifm-color-primary-lighter: #4788ef;
-  --ifm-color-primary-lightest: #6da1f3;
+  /* Marca CIEE */
+  --ciee-blue: #004797;
+  --ciee-blue-dark: #002f66;
+  --ciee-blue-deep: #00254f;
+  --ciee-orange: #f37021;
+  --ciee-orange-dark: #d95a0b;
+  --ciee-orange-light: #ff9a5c;
+
+  /* Superfícies auxiliares */
+  --ciee-surface: #ffffff;
+  --ciee-border: rgba(0, 47, 102, 0.12);
+
+  /* Infima - tema claro */
+  --ifm-color-primary: #004797;
+  --ifm-color-primary-dark: #004088;
+  --ifm-color-primary-darker: #003c80;
+  --ifm-color-primary-darkest: #003169;
+  --ifm-color-primary-light: #004ea6;
+  --ifm-color-primary-lighter: #0052ae;
+  --ifm-color-primary-lightest: #005dc3;
+
+  --ifm-link-color: var(--ciee-blue);
+  --ifm-link-hover-color: var(--ciee-orange-dark);
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 71, 151, 0.08);
+
+  /* Navbar corporativa */
+  --ifm-navbar-background-color: var(--ciee-blue);
+  --ifm-navbar-link-color: #ffffff;
+  --ifm-navbar-link-hover-color: #ffd9c2;
+  --ifm-navbar-shadow: 0 2px 14px rgba(0, 31, 66, 0.22);
+  --ifm-footer-background-color: var(--ciee-blue-deep);
 }
 
+/* Tema escuro: clareia o azul para manter contraste e legibilidade. */
 [data-theme='dark'] {
-  --ifm-color-primary: #6da1f3;
-  --ifm-color-primary-dark: #4788ef;
-  --ifm-color-primary-darker: #3a80ee;
-  --ifm-color-primary-darkest: #1f6feb;
-  --ifm-color-primary-light: #93b9f7;
-  --ifm-color-primary-lighter: #a5c4f8;
-  --ifm-color-primary-lightest: #d7e5fc;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ciee-surface: #0f1c2e;
+  --ciee-border: rgba(147, 185, 247, 0.16);
+
+  --ifm-color-primary: #4c9bea;
+  --ifm-color-primary-dark: #2f87e5;
+  --ifm-color-primary-darker: #207fe3;
+  --ifm-color-primary-darkest: #1769c0;
+  --ifm-color-primary-light: #69afef;
+  --ifm-color-primary-lighter: #78b7f1;
+  --ifm-color-primary-lightest: #a4d0f6;
+
+  --ifm-link-color: #78b7f1;
+  --ifm-link-hover-color: var(--ciee-orange-light);
+  --docusaurus-highlighted-code-line-bg: rgba(76, 155, 234, 0.16);
+
+  --ifm-navbar-background-color: var(--ciee-blue-deep);
+  --ifm-navbar-link-hover-color: var(--ciee-orange-light);
+  --ifm-footer-background-color: #001c3d;
+}
+
+/* Detalhe laranja na borda inferior da navbar. */
+.navbar {
+  border-bottom: 3px solid var(--ciee-orange);
+}
+
+.navbar__brand:hover,
+.navbar__link:hover {
+  color: var(--ifm-navbar-link-hover-color);
+  text-decoration: none;
+}
+
+.navbar__link--active {
+  color: #ffd9c2;
+}
+
+.navbar .clean-btn {
+  color: #ffffff;
+}
+
+/* Badge de uso restrito exibido na navbar. */
+.ciee-navbar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--ciee-orange);
+  color: var(--ciee-blue-deep);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* Botões primários e secundários com o laranja da marca no hover. */
+.button--primary:hover {
+  border-color: var(--ciee-orange-dark);
+  background: var(--ciee-orange-dark);
+}
+
+.button--secondary {
+  border-color: var(--ciee-blue);
+  color: var(--ciee-blue);
+}
+
+.button--secondary:hover {
+  border-color: var(--ciee-orange);
+  background: var(--ciee-orange);
+  color: var(--ciee-blue-deep);
+}
+
+[data-theme='dark'] .button--secondary {
+  border-color: var(--ifm-color-primary-light);
+  color: var(--ifm-color-primary-light);
+}
+
+[data-theme='dark'] .button--secondary:hover {
+  border-color: var(--ciee-orange);
+  background: var(--ciee-orange);
+  color: var(--ciee-blue-deep);
+}
+
+/* Rodapé alinhado à identidade corporativa. */
+.footer {
+  --ifm-footer-link-hover-color: var(--ciee-orange-light);
+}
+
+.footer__title {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.footer__copyright {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+}
+
+@media screen and (max-width: 996px) {
+  .ciee-navbar-badge {
+    margin: 0.25rem 0;
+  }
 }

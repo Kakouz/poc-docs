@@ -1,19 +1,32 @@
-# POC — Documentação de APIs
+# CIEE — Portal de APIs de Integração
 
 Prova de conceito (POC) para validar o uso do [Docusaurus](https://docusaurus.io/)
-na publicação da documentação das nossas APIs no GitHub Pages.
+na publicação do catálogo oficial de APIs do CIEE para contratação e gestão de
+estagiários e aprendizes.
 
-Esta versão foi reduzida ao mínimo para testar o fluxo de publicação e coletar o
-retorno do time antes de adicionar o conteúdo definitivo.
+Esta versão foi reduzida ao mínimo para validar a identidade visual corporativa, a
+navegação e o fluxo de publicação no GitHub Pages antes de adicionar o conteúdo
+definitivo.
 
 ## O que tem no site
 
-- Página inicial com o objetivo da POC.
-- **Visão geral** (`/docs/`) explicando o escopo.
+- Página inicial com hero corporativo e cards de público/uso.
+- **Introdução** (`/docs/geral/introducao`) com o escopo e o público-alvo.
+- **Clientes** (`/docs/category/clientes`) com a visão segmentada por conta.
 - **API de exemplo** (`/docs/apis/exemplo`) com endpoint, parâmetros, exemplo de
   requisição/resposta e códigos de status.
 
 O blog, os tutoriais e as páginas de exemplo do template original foram removidos.
+
+### Identidade visual
+
+As cores oficiais estão centralizadas em `src/css/custom.css`:
+
+- Azul CIEE: `#004797`
+- Laranja CIEE: `#F37021`
+
+Os temas claro e escuro usam variações próprias para manter contraste e
+legibilidade.
 
 ## Requisitos
 
@@ -47,7 +60,8 @@ npm run serve
 ```text
 .
 ├── docs/                  # Conteúdo da documentação (Markdown/MDX)
-│   ├── intro.mdx          # Visão geral
+│   ├── geral/             # Introdução e visão geral
+│   ├── clientes/          # Documentação segmentada por cliente
 │   └── apis/              # Referência das APIs
 ├── src/
 │   ├── css/custom.css     # Tema e variáveis de estilo

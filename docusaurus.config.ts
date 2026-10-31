@@ -4,8 +4,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // Este arquivo roda no Node.js - não use APIs de navegador aqui.
 const config: Config = {
-  title: 'POC — Docs de APIs',
-  tagline: 'Documentação de APIs com Docusaurus',
+  title: 'CIEE — Portal de APIs de Integração',
+  tagline: 'Documentação Técnica para Clientes e Parceiros',
   favicon: 'img/favicon.svg',
 
   future: {
@@ -13,7 +13,6 @@ const config: Config = {
   },
 
   // URL e caminho de publicação no GitHub Pages.
-  // https://<organizacao>.github.io/<repositorio>/
   url: 'https://kakouz.github.io',
   baseUrl: '/poc-docs/',
   organizationName: 'Kakouz',
@@ -48,9 +47,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'POC Docs de APIs',
+      title: 'CIEE APIs',
       logo: {
-        alt: 'Logo da POC',
+        alt: 'CIEE — Portal de APIs de Integração',
         src: 'img/logo.svg',
       },
       items: [
@@ -59,6 +58,17 @@ const config: Config = {
           sidebarId: 'docsSidebar',
           position: 'left',
           label: 'Documentação',
+        },
+        {
+          to: '/docs/category/clientes',
+          label: 'Clientes',
+          position: 'left',
+        },
+        {
+          type: 'html',
+          position: 'right',
+          value:
+            '<span class="ciee-navbar-badge">🔒 Uso Restrito / Homologação</span>',
         },
         {
           href: 'https://github.com/Kakouz/poc-docs',
@@ -74,8 +84,16 @@ const config: Config = {
           title: 'Documentação',
           items: [
             {
-              label: 'Visão geral',
-              to: '/docs/',
+              label: 'Introdução',
+              to: '/docs/geral/introducao',
+            },
+            {
+              label: 'Clientes homologados',
+              to: '/docs/category/clientes',
+            },
+            {
+              label: 'APIs',
+              to: '/docs/apis/exemplo',
             },
           ],
         },
@@ -89,7 +107,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} POC — Documentação de APIs. Feito com Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} CIEE — Centro de Integração Empresa-Escola. Uso restrito a clientes e parceiros homologados.`,
     },
     prism: {
       theme: prismThemes.github,

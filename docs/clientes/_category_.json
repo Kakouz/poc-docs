@@ -1,0 +1,9 @@
+{
+  "label": "Clientes",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "title": "Clientes e Integradores",
+    "description": "Documentação segmentada para grandes contas integradas e parceiros homologados."
+  }
+}
